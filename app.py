@@ -1,5 +1,4 @@
-import os
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template
 from calculations.calculation1 import exp1_bp
 from calculations.calculation2 import exp2_bp
 from calculations.calculation3 import exp3_bp
@@ -38,14 +37,13 @@ def index():
 
 @app.route('/view_pdf')
 def view_pdf():
-    pdf_path = os.path.expanduser("~/Downloads/CHEMISTRY RECORD.pdf")
-    if os.path.exists(pdf_path):
-        return send_file(pdf_path, as_attachment=True, download_name="CHEMISTRY_RECORD.pdf", mimetype='application/pdf')
-    return "PDF not found at ~/Downloads/CHEMISTRY RECORD.pdf"
+    # Vercel serverless functions cannot access local user directories like ~/Downloads.
+    return (
+        "This route is not available in the cloud deployment. "
+        "Generate PDFs using each experiment's download endpoint."
+    ), 410
 
 @app.route('/calculations')
 def calculations():
     return render_template('experiments.html', experiments=EXPERIMENTS)
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
